@@ -9,7 +9,7 @@ import time
 flatten = lambda l: [item for sublist in l for item in sublist]
 
 #adjust accordingly
-mypath = "results/"
+mypath = "amim_test_suite/results_must/"
 all_results = listdir(mypath)
 def get_pathways(condition):
     if condition == "ALS":
@@ -96,7 +96,7 @@ for i in results.index:
         results.neg_log_gsea_p_value[i] = 0
 
 
-disgenet = pd.read_csv("data/networks/disgenet.csv")
+disgenet = pd.read_csv("amim_test_suite/data/networks/disgenet.csv")
 dis_ids = {"ALS":"C0002736", "LC": "C1737250", "UC": "C0009324","HD":"C0020179","CD":"C0021390"}
 disgenet = disgenet[disgenet["disease_id"].isin(list(dis_ids.values()))]
 overlaps = []
@@ -114,7 +114,7 @@ for i in results.index:
         overlaps.append(0)
 
 results["disgenet_overlap"] = overlaps
-#results.to_csv("results/all_results.csv")
+results.to_csv("amim_test_suite/results_rmust/all_results_must.csv")
 
 fig, axes = plt.subplots(3, 1)
 fig.subplots_adjust(hspace=0.8, wspace=0.4)

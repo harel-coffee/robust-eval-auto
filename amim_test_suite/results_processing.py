@@ -18,7 +18,7 @@ def one_sample_one_tailed(sample_data, popmean, alpha=0.05, alternative='less'):
     elif alternative == 'less':
         return(1-p/2)
 
-os.chdir("testsuite/")
+os.chdir("amim_test_suite/testsuite/")
 from scipy import stats
 
 def get_pathways(condition):
@@ -38,7 +38,7 @@ def get_pathways(condition):
 # 1. Reading the data and aggregating in a single dataframe
 
 # path to the folder with individual algorithms results
-mypath = "../results_biosteiner/"
+mypath = "../results_must/"
 all_results = listdir(mypath)
 
 for i in range(len(all_results)):
@@ -214,5 +214,5 @@ results["survival"] = survival
 # results_full = pd.concat([results_old,results], axis=0, ignore_index=True)
 #results_full.to_csv("../full_results.csv")
 
-results.to_csv("../new_results.csv")
+results.to_csv("../results_must/all_results_must.csv")
 
