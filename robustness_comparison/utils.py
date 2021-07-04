@@ -36,7 +36,7 @@ def get_parser():
 
 def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9):
     list_tuples = []
-    all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")[0:3]
+    all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")
     if type(threshold) == list and algorithm in (AlgorithmSelector.ROBUST, AlgorithmSelector.RMUST):
         print(f'Testing {algorithm} with multiple thresholds...')
         for seed_file in all_seeds:
