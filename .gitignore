@@ -8,7 +8,6 @@ robustness_comparison/DominoOut
 robustness_comparison/MuSTOut
 robustness_comparison/RMuSTOut
 robustness_comparison/RobustOut
-robustness_comparison/data
 
 ## DS_Store
 *.DS_Store
