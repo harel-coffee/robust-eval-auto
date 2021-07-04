@@ -2,7 +2,7 @@
 
 
 0. Activate your environment / install all the packages needed and 
-   make sure that robust-eval is your working directory.
+   make sure that robust-eval is your working directory. Make sure you also pulled the submodule of robust with `git submodule update --init`.
 1. Switch to the robust-eval directory
 2. Decide which parameters you need: 
 
