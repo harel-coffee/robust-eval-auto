@@ -3,6 +3,13 @@ amim_test_suite/results
 amim_test_suite/results_must
 amim_test_suite/results_robust
 
+robustness_comparison/DiamondOut
+robustness_comparison/DominoOut
+robustness_comparison/MuSTOut
+robustness_comparison/RMuSTOut
+robustness_comparison/RobustOut
+robustness_comparison/data
+
 ## DS_Store
 *.DS_Store
 
@@ -297,3 +304,4 @@ TSWLatexianTemp*
 # option is specified. Footnotes are the stored in a file with suffix Notes.bib.
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
+.Rproj.user
