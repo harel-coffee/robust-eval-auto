@@ -85,7 +85,7 @@ def call_algorithm(algorithm=utils.AlgorithmSelector.ROBUST, threshold=0.5, init
     for d in return_dict:
         all_jaccards.update(d)
 
-    with open(f'{algorithm.value}Out/{algorithm}.out', "w") as file:
+    with open(f'robustness_comparison/{algorithm.value}Out/{algorithm}.out', "w") as file:
         file.write("seed_set,mean jaccard\n")
         for key, value in all_jaccards.items():
             file.write(f'{key},{value}\n')

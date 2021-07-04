@@ -14,10 +14,10 @@ def run_diamond(path_to_network, path_to_seeds, outfile):
     f = open(tmpfile, "w")
     f.writelines(lines)
     f.close()
-    if not os.path.exists('DiamondOut'):
-        os.makedirs('DiamondOut')
-    call(["python3", "DIAMOnD.py", tmpfile, path_to_seeds, "200", "1", outfile])
-    nodes = pd.read_csv(outfile, sep="\t")["DIAMOnD_node"]
+    if not os.path.exists('robustness_comparison/DIAMONDOut'):
+        os.makedirs('robustness_comparison/DIAMONDOut')
+    call(["python3", "amim_test_suite/algorithms/DIAMOnD/DIAMOnD.py", tmpfile, path_to_seeds, "200", "1", outfile])
+    nodes = pd.read_csv(outfile, sep="\t", header=None)[0]
     os.remove(tmpfile)
     os.remove(outfile)
     return nodes

@@ -24,8 +24,8 @@ def allowed_values_floats(x):
 def get_parser():
     parser = argparse.ArgumentParser('tests the mean overlap between different runs with shuffled input networks')
     parser.add_argument('--algorithm', type=AlgorithmSelector, choices=list(AlgorithmSelector), required=True)
-    parser.add_argument('--threshold', type=allowed_values_floats,
-                        help='Threshold for ROBUST and MuST, default: 0.1-0.9 in 0.1 steps')
+    parser.add_argument('--threshold', type=allowed_values_floats, nargs='+',
+                        help='Threshold for ROBUST and R-MuST, default: 0.1-0.9 in 0.1 steps')
     parser.add_argument('--init', default=0.25, type=allowed_values_floats,
                         help='Initial fraction value for ROBUST, default: 0.25')
     parser.add_argument('--red', default=0.9, type=allowed_values_floats,
