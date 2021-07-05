@@ -111,7 +111,11 @@ def call_algorithm(algorithm=utils.AlgorithmSelector.ROBUST, threshold=0.5, init
     for d in return_dict:
         all_jaccards.update(d)
 
-    with open(f'robustness_comparison/{algorithm.value}Out/{algorithm}.out', "w") as file:
+    if algorithm == 'ROBUST':
+        filename = f'robustness_comparison/{algorithm.value}Out/{algorithm}_{init}_{red}.out'
+    else:
+        filename = f'robustness_comparison/{algorithm.value}Out/{algorithm}.out'
+    with open(filename, "w") as file:
         file.write("seed_set,mean jaccard\n")
         for key, value in all_jaccards.items():
             file.write(f'{key},{value}\n')
