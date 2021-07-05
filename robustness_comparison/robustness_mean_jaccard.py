@@ -12,10 +12,42 @@ from wrapper_diamond import run_diamond
 from wrapper_domino import run_domino
 
 
+def compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfile):
+    # COMPUTE MEAN JACCARDS
+    sumJaccards = 0
+    meanIntersectionSize = 0
+    meanUnionSize = 0
+    for i in range(robustness_iterations - 1):
+        for j in range(i + 1, robustness_iterations):
+            if len(all_node_sets[i].union(all_node_sets[j])) != 0:
+                sumJaccards += (len(all_node_sets[i].intersection(all_node_sets[j])) / len(
+                    all_node_sets[i].union(all_node_sets[j])))
+                meanIntersectionSize += len(all_node_sets[i].intersection(all_node_sets[j]))
+                meanUnionSize += len(all_node_sets[i].union(all_node_sets[j]))
+
+    possibleCombinations = (1 / (math.factorial(robustness_iterations) // (
+            math.factorial(2) * math.factorial(robustness_iterations - 2))))
+    meanJaccard = possibleCombinations * sumJaccards
+    meanIntersectionSize = possibleCombinations * meanIntersectionSize
+    meanUnionSize = possibleCombinations * meanUnionSize
+    if not os.path.exists(f'robustness_comparison/{algorithm}Out'):
+        os.makedirs(f'robustness_comparison/{algorithm}Out')
+    with open(outfile, "w") as file:
+        file.write("Mean Jaccard: " + str(meanJaccard) + "\n")
+        file.write("Mean Intersection Size: " + str(meanIntersectionSize) + "\n")
+        file.write("Mean Union Size: " + str(meanUnionSize) + "\n")
+        for nodeset in all_node_sets:
+            file.write(str(nodeset) + "\n")
+    return meanJaccard
+
+
 def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, red=0.9):
     from amim_test_suite.algorithms.robust.pcst_approach.utils.ppi import read_terminals
     robustness_iterations = 20
-    all_node_sets = [set() for i in range(robustness_iterations)]
+    if type(threshold) == list:
+        all_node_sets = [dict() for i in range(robustness_iterations)]
+    else:
+        all_node_sets = [set() for i in range(robustness_iterations)]
     path_to_network = "robustness_comparison/data/2020-07-07/protein-protein-interaction.txt"
     if algorithm == 'ROBUST':
         terminals = read_terminals(path_to_seeds)
@@ -41,37 +73,31 @@ def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, r
         elif algorithm == 'RMUST':
             result_rmust = run_rmust(path_to_network, path_to_seeds, threshold)
             all_node_sets[i].update(result_rmust)
-
-    #COMPUTE MEAN JACCARDS
     seed_name = path_to_seeds.split("/")[4].split(".")[0]
-    sumJaccards = 0
-    meanIntersectionSize = 0
-    meanUnionSize = 0
-    for i in range(robustness_iterations - 1):
-        for j in range(i + 1, robustness_iterations):
-            if len(all_node_sets[i].union(all_node_sets[j])) != 0:
-                sumJaccards += (len(all_node_sets[i].intersection(all_node_sets[j])) / len(
-                    all_node_sets[i].union(all_node_sets[j])))
-                meanIntersectionSize += len(all_node_sets[i].intersection(all_node_sets[j]))
-                meanUnionSize += len(all_node_sets[i].union(all_node_sets[j]))
+    if type(threshold) == list:
+        return_dict = dict()
+        for thr in threshold:
+            nodeset = [set() for i in range(robustness_iterations)]
+            index = 0
+            for dic in all_node_sets:
+                for key in dic:
+                    if key == thr:
+                        nodeset[index] = set(dic[key])
+                        index += 1
+            if algorithm == 'ROBUST':
+                outfile = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_name}_thr{thr}_init{init}_red{red}.out"
+            else:
+                outfile = f"robustness_comparison/{algorithm}Out/RMUST_{seed_name}_thr{thr}.out"
+            meanJaccard = compute_mean_jaccard(robustness_iterations, nodeset, algorithm, outfile)
+            return_dict[f'{seed_name}_thr{thr}'] = meanJaccard
+        return return_dict
 
-    possibleCombinations = (1 / (math.factorial(robustness_iterations) // (
-            math.factorial(2) * math.factorial(robustness_iterations - 2))))
-    meanJaccard = possibleCombinations * sumJaccards
-    meanIntersectionSize = possibleCombinations * meanIntersectionSize
-    meanUnionSize = possibleCombinations * meanUnionSize
-    if not os.path.exists(f'robustness_comparison/{algorithm}Out'):
-        os.makedirs(f'robustness_comparison/{algorithm}Out')
-    with open(outfile, "w") as file:
-        file.write("Mean Jaccard: " + str(meanJaccard) + "\n")
-        file.write("Mean Intersection Size: " + str(meanIntersectionSize) + "\n")
-        file.write("Mean Union Size: " + str(meanUnionSize) + "\n")
-        for nodeset in all_node_sets:
-            file.write(str(nodeset) + "\n")
-    if algorithm in ('ROBUST', 'RMUST'):
-        return {f'{seed_name}_thr{threshold}': meanJaccard}
     else:
-        return {seed_name: meanJaccard}
+        meanJaccard = compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfile)
+        if algorithm in ('ROBUST', 'RMUST'):
+            return {f'{seed_name}_thr{threshold}': meanJaccard}
+        else:
+            return {seed_name: meanJaccard}
 
 
 def call_algorithm(algorithm=utils.AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9, threads=4):

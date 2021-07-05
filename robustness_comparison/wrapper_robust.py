@@ -10,4 +10,9 @@ def run_robust(terminals, threshold, init, red):
                                                  reduction_factor=red)
     steiner_trees = engine(ppi_instance, n=10)
     t = steiner_trees.get_occurrences(include_terminals=True)
-    return t[t["%occurrences"] >= threshold].index.values
+    if type(threshold) == list:
+        return_dict = {}
+        for thr in threshold:
+            return_dict[thr] = t[t["%occurrences"] >= thr].index.values
+        return return_dict
+    return set(t[t["%occurrences"] >= threshold].index.values)

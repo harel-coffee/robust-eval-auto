@@ -36,18 +36,17 @@ def get_parser():
 
 def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9):
     list_tuples = []
-    all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")
+    all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")[0:3]
     if type(threshold) == list and algorithm in (AlgorithmSelector.ROBUST, AlgorithmSelector.RMUST):
         print(f'Testing {algorithm} with multiple thresholds...')
         for seed_file in all_seeds:
             path_to_seeds = f"robustness_comparison/data/2020-07-07/all-seeds/{seed_file}"
-            for thr in threshold:
-                if algorithm == AlgorithmSelector.ROBUST:
-                    robust_out = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_file.split('.')[0]}_thr{thr}_init{init}_red{red}.out"
-                    list_tuples.append((algorithm.value, path_to_seeds, robust_out, thr, init, red))
-                else:
-                    rmust_out = f"robustness_comparison/{algorithm}Out/RMUST_{seed_file.split('.')[0]}_thr{thr}.out"
-                    list_tuples.append((algorithm.value, path_to_seeds, rmust_out, thr))
+            if algorithm == AlgorithmSelector.ROBUST:
+                robust_out = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_file.split('.')[0]}_init{init}_red{red}.out"
+                list_tuples.append((algorithm.value, path_to_seeds, robust_out, threshold, init, red))
+            else:
+                rmust_out = f"robustness_comparison/{algorithm}Out/RMUST_{seed_file.split('.')[0]}.out"
+                list_tuples.append((algorithm.value, path_to_seeds, rmust_out, threshold))
     elif algorithm == AlgorithmSelector.ROBUST:
         print(f'Running ROBUST with initial fraction={init} and reduction factor={red}')
         for seed_file in all_seeds:
