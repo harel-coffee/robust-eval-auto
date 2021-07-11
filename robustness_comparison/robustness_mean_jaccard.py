@@ -111,7 +111,7 @@ def call_algorithm(algorithm=utils.AlgorithmSelector.ROBUST, threshold=0.5, init
     for d in return_dict:
         all_jaccards.update(d)
 
-    if algorithm == 'ROBUST':
+    if algorithm == utils.AlgorithmSelector.ROBUST:
         filename = f'robustness_comparison/{algorithm.value}Out/{algorithm}_{init}_{red}.out'
     else:
         filename = f'robustness_comparison/{algorithm.value}Out/{algorithm}.out'
