@@ -32,12 +32,12 @@ def compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfil
     meanUnionSize = possibleCombinations * meanUnionSize
     if not os.path.exists(f'robustness_comparison/{algorithm}Out'):
         os.makedirs(f'robustness_comparison/{algorithm}Out')
-    with open(outfile, "w") as file:
-        file.write("Mean Jaccard: " + str(meanJaccard) + "\n")
-        file.write("Mean Intersection Size: " + str(meanIntersectionSize) + "\n")
-        file.write("Mean Union Size: " + str(meanUnionSize) + "\n")
-        for nodeset in all_node_sets:
-            file.write(str(nodeset) + "\n")
+    #with open(outfile, "w") as file:
+    #    file.write("Mean Jaccard: " + str(meanJaccard) + "\n")
+    #    file.write("Mean Intersection Size: " + str(meanIntersectionSize) + "\n")
+    #    file.write("Mean Union Size: " + str(meanUnionSize) + "\n")
+    #    for nodeset in all_node_sets:
+    #        file.write(str(nodeset) + "\n")
     return meanJaccard
 
 
