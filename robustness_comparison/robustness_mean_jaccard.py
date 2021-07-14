@@ -41,7 +41,7 @@ def compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfil
     return meanJaccard
 
 
-def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, red=0.9):
+def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, red=0.9, nr_of_trees=10):
     from amim_test_suite.algorithms.robust.pcst_approach.utils.ppi import read_terminals
     robustness_iterations = 20
     if type(threshold) == list:
@@ -55,7 +55,7 @@ def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, r
         print(f'Iteration {i}')
 
         if algorithm == 'ROBUST':
-            result_robust = run_robust(terminals, threshold, init, red)
+            result_robust = run_robust(terminals=terminals, threshold=threshold, init=init, red=red, nr_of_trees=nr_of_trees)
             all_node_sets[i].update(result_robust)
 
         elif algorithm == 'DIAMOND':
@@ -74,35 +74,56 @@ def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, r
             result_rmust = run_rmust(path_to_network, path_to_seeds, threshold)
             all_node_sets[i].update(result_rmust)
     seed_name = path_to_seeds.split("/")[4].split(".")[0]
-    if type(threshold) == list:
+    if type(nr_of_trees) == list:
         return_dict = dict()
-        for thr in threshold:
-            nodeset = [set() for i in range(robustness_iterations)]
-            index = 0
-            for dic in all_node_sets:
-                for key in dic:
-                    if key == thr:
-                        nodeset[index] = set(dic[key])
-                        index += 1
-            if algorithm == 'ROBUST':
-                outfile = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_name}_thr{thr}_init{init}_red{red}.out"
-            else:
-                outfile = f"robustness_comparison/{algorithm}Out/RMUST_{seed_name}_thr{thr}.out"
-            meanJaccard = compute_mean_jaccard(robustness_iterations, nodeset, algorithm, outfile)
-            return_dict[f'{seed_name}_thr{thr}'] = meanJaccard
-        return return_dict
-
-    else:
-        meanJaccard = compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfile)
-        if algorithm in ('ROBUST', 'RMUST'):
-            return {f'{seed_name}_thr{threshold}': meanJaccard}
+        if type(threshold) == list:
+            for thr in threshold:
+                for nt in nr_of_trees:
+                    iterate_over_solutions(return_dict=return_dict, matching_key=f'{thr}_{nt}',
+                                           robustness_iterations=robustness_iterations,
+                                           all_node_sets=all_node_sets, algorithm=algorithm, seed_name=seed_name,
+                                           init=init, red=red)
         else:
-            return {seed_name: meanJaccard}
+            for nt in nr_of_trees:
+                iterate_over_solutions(return_dict=return_dict, matching_key=nt,
+                                       robustness_iterations=robustness_iterations,
+                                       all_node_sets=all_node_sets, algorithm=algorithm, seed_name=seed_name,
+                                       init=init, red=red)
+        return return_dict
+    else:
+        if type(threshold) == list:
+            return_dict = dict()
+            for thr in threshold:
+                iterate_over_solutions(return_dict=return_dict, matching_key=thr, robustness_iterations=robustness_iterations,
+                                       all_node_sets=all_node_sets, algorithm=algorithm, seed_name=seed_name, init=init, red=red)
+            return return_dict
+
+        else:
+            meanJaccard = compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfile)
+            if algorithm in ('ROBUST', 'RMUST'):
+                return {f'{seed_name}_thr{threshold}': meanJaccard}
+            else:
+                return {seed_name: meanJaccard}
 
 
-def call_algorithm(algorithm=utils.AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9, threads=4):
+def iterate_over_solutions(return_dict, matching_key, robustness_iterations, all_node_sets, algorithm, seed_name, init, red):
+    nodeset = [set() for i in range(robustness_iterations)]
+    index = 0
+    for dic in all_node_sets:
+        for key in dic:
+            if key == matching_key:
+                nodeset[index] = set(dic[key])
+                index += 1
+    if algorithm == 'ROBUST':
+        outfile = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_name}_key{matching_key}_init{init}_red{red}.out"
+    else:
+        outfile = f"robustness_comparison/{algorithm}Out/RMUST_{seed_name}_key{matching_key}.out"
+    meanJaccard = compute_mean_jaccard(robustness_iterations, nodeset, algorithm, outfile)
+    return_dict[f'{seed_name}_key{matching_key}'] = meanJaccard
+
+def call_algorithm(algorithm=utils.AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9, nr_of_trees=10, threads=4):
     print(f'Running {algorithm} in {threads} threads...')
-    list_tuples = prep_parameters(algorithm, threshold, init, red)
+    list_tuples = prep_parameters(algorithm, threshold, init, red, nr_of_trees)
     all_jaccards = {}
 
     with Pool(threads) as p:
@@ -129,4 +150,4 @@ if __name__ == '__main__':
         threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     else:
         threshold = arguments.threshold
-    call_algorithm(arguments.algorithm, threshold, arguments.init, arguments.red, arguments.threads)
+    call_algorithm(arguments.algorithm, threshold, arguments.init, arguments.red, arguments.trees, arguments.threads)
