@@ -4,7 +4,7 @@ import pandas as pd
 from subprocess import call
 
 
-def run_rmust(path_to_network, path_to_seeds, threshold):
+def run_rmust(path_to_network, path_to_seeds, threshold, nr_of_trees):
     seed_name = path_to_seeds.split("/")[4].split(".")[0]
     file = open(path_to_network)
     lines = file.readlines()
@@ -23,7 +23,7 @@ def run_rmust(path_to_network, path_to_seeds, threshold):
     outedges = f"outedges_{seed_name}_{thr_name}.txt"
     open(outedges, 'a').close()
     call(
-        f'java -jar robustness_comparison/MultiSteinerBackend.jar -nw {shuffled_network} -s {path_to_seeds} -on {outnodes} -oe {outedges} -hp 0.0 -m -t 10 -mi 2 -pd -ncd 32',
+        f'java -jar robustness_comparison/MultiSteinerBackend.jar -nw {shuffled_network} -s {path_to_seeds} -on {outnodes} -oe {outedges} -hp 0.0 -m -t {nr_of_trees} -mi 2 -pd -ncd 32',
         shell=True)
 
     nodes = pd.read_csv(outnodes, sep="\t")

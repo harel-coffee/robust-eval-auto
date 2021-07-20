@@ -35,9 +35,19 @@ def get_parser():
     return parser
 
 
-def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9, nr_of_trees=10):
+def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9, nr_of_trees=20):
     list_tuples = []
-    all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")[0:100]
+    #sort seeds by size
+    path = "robustness_comparison/data/2020-07-07/all-seeds"
+    dirpath = os.path.abspath(path)
+    all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
+    all_seeds = sorted(all_files, key = os.path.getsize)[0:10]
+    all_seeds = [os.path.basename(file) for file in all_seeds]
+    if type(threshold) == list and len(threshold) == 1:
+        threshold = threshold[0]
+    if type(nr_of_trees) == list and len(nr_of_trees) == 1:
+        nr_of_trees = nr_of_trees[0]
+
     if type(threshold) == list and algorithm in (AlgorithmSelector.ROBUST, AlgorithmSelector.RMUST):
         print(f'Testing {algorithm} with multiple thresholds...')
         if type(nr_of_trees) == list:
@@ -47,6 +57,8 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
                 if algorithm == AlgorithmSelector.ROBUST:
                     robust_out = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_file.split('.')[0]}_init{init}_red{red}.out"
                     list_tuples.append((algorithm.value, path_to_seeds, robust_out, threshold, init, red, nr_of_trees))
+                else:
+                    raise ValueError("#trees can only be specified as a list for ROBUST")
         else:
             for seed_file in all_seeds:
                 path_to_seeds = f"robustness_comparison/data/2020-07-07/all-seeds/{seed_file}"
@@ -55,13 +67,13 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
                     list_tuples.append((algorithm.value, path_to_seeds, robust_out, threshold, init, red))
                 else:
                     rmust_out = f"robustness_comparison/{algorithm}Out/RMUST_{seed_file.split('.')[0]}.out"
-                    list_tuples.append((algorithm.value, path_to_seeds, rmust_out, threshold))
+                    list_tuples.append((algorithm.value, path_to_seeds, rmust_out, threshold, nr_of_trees))
     elif algorithm == AlgorithmSelector.ROBUST:
         print(f'Running ROBUST with initial fraction={init} and reduction factor={red}')
         for seed_file in all_seeds:
             path_to_seeds = f"robustness_comparison/data/2020-07-07/all-seeds/{seed_file}"
             robust_out = f"robustness_comparison/{algorithm}Out/ROBUST_{seed_file.split('.')[0]}_thr{threshold}_init{init}_red{red}.out"
-            list_tuples.append((algorithm.value, path_to_seeds, robust_out, threshold, init, red))
+            list_tuples.append((algorithm.value, path_to_seeds, robust_out, threshold, init, red, nr_of_trees))
     elif algorithm in [AlgorithmSelector.DIAMOND, AlgorithmSelector.DOMINO, AlgorithmSelector.MUST]:
         print(f'Running {algorithm}...')
         for seed_file in all_seeds:
@@ -73,5 +85,5 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
         for seed_file in all_seeds:
             path_to_seeds = f"robustness_comparison/data/2020-07-07/all-seeds/{seed_file}"
             rmust_out = f"robustness_comparison/{algorithm}Out/RMUST_{seed_file.split('.')[0]}_thr{threshold}.out"
-            list_tuples.append((algorithm.value, path_to_seeds, rmust_out, threshold))
+            list_tuples.append((algorithm.value, path_to_seeds, rmust_out, threshold, nr_of_trees))
     return list_tuples

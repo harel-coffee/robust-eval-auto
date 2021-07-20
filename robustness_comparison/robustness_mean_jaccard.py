@@ -41,7 +41,7 @@ def compute_mean_jaccard(robustness_iterations, all_node_sets, algorithm, outfil
     return meanJaccard
 
 
-def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, red=0.9, nr_of_trees=10):
+def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, red=0.9, nr_of_trees=20):
     from amim_test_suite.algorithms.robust.pcst_approach.utils.ppi import read_terminals
     robustness_iterations = 20
     if type(threshold) == list:
@@ -71,7 +71,7 @@ def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, r
             all_node_sets[i].update(result_must)
 
         elif algorithm == 'RMUST':
-            result_rmust = run_rmust(path_to_network, path_to_seeds, threshold)
+            result_rmust = run_rmust(path_to_network, path_to_seeds, threshold, nr_of_trees)
             all_node_sets[i].update(result_rmust)
     seed_name = path_to_seeds.split("/")[4].split(".")[0]
     if type(nr_of_trees) == list:
