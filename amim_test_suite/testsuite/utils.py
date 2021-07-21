@@ -14,8 +14,10 @@ from testsuite.grandforest_wrapper import GrandForestWrapper
 from testsuite.cosine_wrapper import CosineWrapper
 from testsuite.hotnet_wrapper import HotNetWrapper
 from testsuite.domino_wrapper import DominoWrapper
+from testsuite.robust_wrapper import RobustWrapper
+from testsuite.must_wrapper import MuSTWrapper
 
-from testsuite.netcore_wrapper import NetCoreWrapper
+#from testsuite.netcore_wrapper import NetCoreWrapper
 from testsuite.custom_wrapper import CustomWrapper
 flatten = lambda l: [item for sublist in l for item in sublist]
 
@@ -77,6 +79,8 @@ class AlgorithmSelector(Enum):
     NETCORE = 'NETCORE'
     CUSTOM = "CUSTOM"
     DOMINO = "DOMINO"
+    ROBUST = "ROBUST"
+    MUST = "MUST"
 
     def __str__(self):
         return self.value
@@ -202,10 +206,14 @@ def get_algorithm_wrapper(algorithm_selector):
         return CosineWrapper()
     elif algorithm_selector == AlgorithmSelector.HOTNET:
         return HotNetWrapper()
-    elif algorithm_selector == AlgorithmSelector.NETCORE:
-        return NetCoreWrapper()
+    #elif algorithm_selector == AlgorithmSelector.NETCORE:
+    #    return NetCoreWrapper()
     elif algorithm_selector == AlgorithmSelector.DOMINO:
         return DominoWrapper()
+    elif algorithm_selector == AlgorithmSelector.ROBUST:
+        return RobustWrapper()
+    elif algorithm_selector == AlgorithmSelector.MUST:
+        return MuSTWrapper()
     elif algorithm_selector == AlgorithmSelector.CUSTOM:
         return CustomWrapper()
 
