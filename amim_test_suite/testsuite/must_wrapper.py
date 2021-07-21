@@ -68,6 +68,6 @@ class MuSTWrapper(AlgorithmWrapper):
         result_genes = list(map(str, result_genes))
 
         # 6. Delete temporary data.
-        subprocess.call(f'rm ../temp/{prefix}_custom_*', shell=True)
+        subprocess.call(f'rm ../temp/{prefix}_MuST_*', shell=True)
 
         return result_genes, AlgorithmWrapper.mean_degree(ggi_network, result_genes)
