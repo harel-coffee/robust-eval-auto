@@ -10,21 +10,34 @@ robustness_tests <- robustness_tests %>%
   separate(col="seed_set", into=c("seed_set", "Threshold", "Nr of Trees"), sep="_")
 robustness_tests[, Threshold := tstrsplit(Threshold, "key", keep=2)]
 robustness_tests[, Threshold := as.factor(Threshold)]
-robustness_tests[, `Initial Fraction` := as.factor(paste0("Init:", `Initial Fraction`))]
-robustness_tests[, `Reduction Factor` := as.factor(paste0("Red:", `Reduction Factor`))]
+robustness_tests[, `Initial Fraction` := `Initial Fraction`]
+robustness_tests[, `Reduction Factor` := `Reduction Factor`]
 robustness_tests[, `Nr of Trees` := factor(`Nr of Trees`, levels = c(5, 10, 15, 20))]
 
-ggplot(robustness_tests[`Initial Fraction` == "Init:0.25" & `Reduction Factor` == "Red:0.9"])+
-  geom_boxplot(aes(x = Threshold, y = `mean jaccard`, color = `Nr of Trees`))+
-  labs(y="Mean Jaccard")+
-  theme_bw()+
-  theme(text=element_text(size = 13))
-ggsave("trees_025_09.png", width = 10, height = 7)
+colorBlindBlack8  <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
+                       "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-ggplot(robustness_tests, aes(x=Threshold, y = `mean jaccard`))+
+ggplot(robustness_tests, aes(x=Threshold, y = `mean jaccard`, color = `Nr of Trees`))+
   geom_boxplot()+
-  labs(y="Mean Jaccard")+
-  facet_grid(`Initial Fraction`~ `Reduction Factor`)+
+  labs(y=expression(paste("Distributions of robustness coefficients ", r[S], " over 100 seed sets S")))+
+  facet_grid(`Reduction Factor` ~ `Initial Fraction`, labeller=label_bquote(
+    rows=beta*"="*.(`Reduction Factor`),
+    cols=alpha*"="*.(`Initial Fraction`))
+    )+
+  scale_colour_manual(values=colorBlindBlack8[c(6,3,2,8)], labels=c("n=5", "n=10", "n=15", "n=20"))+
   theme_bw()+
   theme(text=element_text(size = 13))
-ggsave("init_vs_red.png", width = 14, height = 9)
+ggsave("../img/init_vs_red.png", width = 9, height = 14)
+
+ggplot(robustness_tests[`Initial Fraction` == "0.25" & `Reduction Factor` == "0.9"])+
+  geom_boxplot(aes(x = Threshold, y = `mean jaccard`, color = `Nr of Trees`))+
+  labs(y=expression(paste("Distributions of robustness coefficients ", r[S], " over 100 seed sets S")))+
+  facet_grid(`Reduction Factor` ~ `Initial Fraction`, labeller=label_bquote(
+    rows=beta*"="*.(`Reduction Factor`),
+    cols=alpha*"="*.(`Initial Fraction`))
+  )+
+  scale_colour_manual(values=colorBlindBlack8[c(6,3,2,8)], labels=c("n=5", "n=10", "n=15", "n=20"))+
+  theme_bw()+
+  theme(text=element_text(size = 13))
+ggsave("../img/trees_025_09.png", width = 10, height = 7)
+

@@ -58,7 +58,7 @@ class RobustWrapper(AlgorithmWrapper):
         # Run robust.
         robust = 'cd ../algorithms/robust/; python robust.py'
         #input seeds output initial fraction reduction factor #trees threshold
-        command = f'{robust} ../{path_to_network} ../{path_seeds} ../{path_to_output} 0.25 0.9 20 0.5'
+        command = f'{robust} ../{path_to_network} ../{path_seeds} ../{path_to_output} 0.25 0.9 20 0.1'
         subprocess.call(command, shell=True, stdout=subprocess.PIPE)
 
         # 5. Process results such that they are formatted as a list of strings (entez IDs)
@@ -66,6 +66,6 @@ class RobustWrapper(AlgorithmWrapper):
         result_genes = list(map(str, result_genes))
 
         # 6. Delete temporary data.
-        subprocess.call(f'rm ../temp/{prefix}_robust_*', shell=True)
+        #subprocess.call(f'rm ../temp/{prefix}_robust_*', shell=True)
 
         return result_genes, AlgorithmWrapper.mean_degree(ggi_network, result_genes)

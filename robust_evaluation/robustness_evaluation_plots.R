@@ -40,8 +40,9 @@ print(length(unique(all_results$seed_set)))
 ggplot(all_results, aes(x = algorithm, y = `mean jaccard`))+
   geom_boxplot()+
   theme_bw()+
-  theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1))+
-  labs(x = "Algorithm", y = "Mean Jaccard")
+  theme(text = element_text(size=20), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.y = element_text(hjust=2))+
+  labs(x = "Algorithm", 
+       y = expression(atop(paste("Distributions of robustness coefficients ", r[S]), paste("over 829 seed sets S"))))
 
 ggsave("../img/all_robustness_results.png")
 
