@@ -4,17 +4,11 @@ library(ggpubr)
 full_results <- fread("full_results.csv")
 full_results[, V1 := NULL]
 
-results_robust <- fread("../amim_test_suite/results_robust/all_results_robust.csv")
-results_robust[, c("V1", "Unnamed: 0") := NULL]
-results_robust$algorithm_name <- "ROBUST"
+results_robust_must <- fread("../amim_test_suite/results/all_results.csv")
+results_robust_must[, V1 := NULL]
 
-results_must <- fread("../amim_test_suite/results_must/all_results_must.csv")
-results_must[, c("V1", "Unnamed: 0") := NULL]
-results_must$algorithm_name <- "MuST"
-
-results_all <- rbind(results_must, results_robust)
-results_all <- rbind(results_all, full_results)
-results_all <- results_all[algorithm_name %in% c("ROBUST", "MuST", "DOMINO", "DIAMOND")]
+results_all <- rbind(results_robust_must, full_results)
+results_all <- results_all[algorithm_name %in% c("ROBUST", "MUST", "DOMINO", "DIAMOND")]
 results_all[, network_generator_name := as.factor(network_generator_name)]
 results_all[, algorithm_name := as.factor(algorithm_name)]
 
@@ -25,14 +19,14 @@ results_original <- results_all[network_generator_name == "ORIGINAL"]
 results_original <- results_original[, -c("mean_mutual_information", "survival")]
 results_original <- melt(results_original, measure.vars = c("disgenet_overlap", "neg_log_gsea_p_value"), 
                          variable.name = "score", value.name = "value")
-results_original <- results_original[, condition_name := gsub("GSE112680", "ALS", condition_name)]
-results_original <- results_original[, condition_name := gsub("GSE30219", "LC", condition_name)]
-results_original <- results_original[, condition_name := gsub("GSE75214_cd", "CD", condition_name)]
-results_original <- results_original[, condition_name := gsub("GSE75214", "UC", condition_name)]
-results_original <- results_original[, condition_name := gsub("GSE3790", "HD", condition_name)]
+#results_original <- results_original[, condition_name := gsub("GSE112680", "ALS", condition_name)]
+#results_original <- results_original[, condition_name := gsub("GSE30219", "LC", condition_name)]
+#results_original <- results_original[, condition_name := gsub("GSE75214_cd", "CD", condition_name)]
+#results_original <- results_original[, condition_name := gsub("GSE75214", "UC", condition_name)]
+#results_original <- results_original[, condition_name := gsub("GSE3790", "HD", condition_name)]
 results_original <- results_original[, score := gsub("disgenet_overlap", "Overlap with DisGeNET disease genes", score)]
 results_original <- results_original[, score := gsub("neg_log_gsea_p_value", "KEGG gene set enrichment", score)]
-results_original <- results_original[, algorithm_name := factor(algorithm_name, levels = c("ROBUST", "MuST", "DIAMOND", "DOMINO"))]
+results_original <- results_original[, algorithm_name := factor(algorithm_name, levels = c("ROBUST", "MUST", "DIAMOND", "DOMINO"))]
 
 per_disease_disgenet <- ggplot(results_original[score == "Overlap with DisGeNET disease genes"], aes(x = condition_name, y = value, fill = algorithm_name))+
   geom_boxplot()+
