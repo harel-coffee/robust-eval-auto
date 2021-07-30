@@ -4,10 +4,14 @@ library(ggpubr)
 full_results <- fread("full_results.csv")
 full_results[, V1 := NULL]
 
-results_robust_must <- fread("../amim_test_suite/results/all_results.csv")
-results_robust_must[, V1 := NULL]
+results_robust<- fread("../amim_test_suite/results0.5/all_results.csv")
+results_robust[, V1 := NULL]
+results_must <- fread("../amim_test_suite/results_must/all_results_must.csv")
+results_must[, c("V1", "Unnamed: 0") := NULL]
+results_must$algorithm_name <- "MUST"
 
-results_all <- rbind(results_robust_must, full_results)
+results_all <- rbind(results_robust, full_results)
+results_all <- rbind(results_all, results_must)
 results_all <- results_all[algorithm_name %in% c("ROBUST", "MUST", "DOMINO", "DIAMOND")]
 results_all[, network_generator_name := as.factor(network_generator_name)]
 results_all[, algorithm_name := as.factor(algorithm_name)]
@@ -67,7 +71,7 @@ ggarrange(per_disease_disgenet, per_disease_kegg,
           font.label=list(size=18),
           legend = "right",
           common.legend = T)
-#ggsave("../img/functional_relevance_all.png")
+ggsave("~/Downloads/plots/plot_thr0.5.png")
 
 
 results_subset <- results_all[ggi_network_name %in% c("HPRD", "IID_BRAIN", "IID_LUNG") & 
