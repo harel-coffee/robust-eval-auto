@@ -8,6 +8,3 @@
 #SBATCH --mem=200G
 
 python amim_test_suite/run_tests.py parallel --networks BIOGRID HPRD STRING APID IID_BRAIN IID_LUNG --generators ORIGINAL REWIRED EXPECTED_DEGREE SHUFFLED SCALE_FREE UNIFORM --method ROBUST --verbose
-python amim_test_suite/run_tests.py parallel --networks BIOGRID HPRD STRING APID IID_BRAIN IID_LUNG --generators ORIGINAL REWIRED EXPECTED_DEGREE SHUFFLED SCALE_FREE UNIFORM --method MUST --verbose
-python amim_test_suite/run_tests.py parallel --networks BIOGRID HPRD STRING APID IID_BRAIN IID_LUNG --generators ORIGINAL REWIRED EXPECTED_DEGREE SHUFFLED SCALE_FREE UNIFORM --method DIAMOND --verbose
-python amim_test_suite/run_tests.py parallel --networks BIOGRID HPRD STRING APID IID_BRAIN IID_LUNG --generators ORIGINAL REWIRED EXPECTED_DEGREE SHUFFLED SCALE_FREE UNIFORM --method DOMINO --verbose

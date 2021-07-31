@@ -43,7 +43,7 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
     all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
     all_seeds = sorted(all_files, key = os.path.getsize)
     #tmp
-    all_seeds = [os.path.basename(file) for file in all_seeds][1:100]
+    all_seeds = [os.path.basename(file) for file in all_seeds][1:900]
     if type(threshold) == list and len(threshold) == 1:
         threshold = threshold[0]
     if type(nr_of_trees) == list and len(nr_of_trees) == 1:
