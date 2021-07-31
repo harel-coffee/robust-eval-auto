@@ -2,7 +2,7 @@
 #
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=25
-#SBATCH --job-name=robustness1
+#SBATCH --job-name=rob_rmust_robustness
 #SBATCH --output=%x.%j.txt
 #SBATCH --error=%x.%j.err
 #SBATCH --mem=250G
@@ -12,4 +12,5 @@ python robustness_comparison/robustness_mean_jaccard.py --algorithm RMUST --thre
 #python robustness_comparison/robustness_mean_jaccard.py --algorithm MUST --threads 32
 #python robustness_comparison/robustness_mean_jaccard.py --algorithm DIAMOND --threads 25
 #python robustness_comparison/robustness_mean_jaccard.py --algorithm DOMINO --threads 25
+
 
