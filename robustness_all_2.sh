@@ -8,5 +8,5 @@
 #SBATCH --mem=250G
 
 python robustness_comparison/robustness_mean_jaccard.py --algorithm MUST --threads 32
-python robustness_comparison/robustness_mean_jaccard.py --algorithm RMUST --threshold 0.5 --trees 20 --threads 32
+#python robustness_comparison/robustness_mean_jaccard.py --algorithm RMUST --threshold 0.5 --trees 20 --threads 32
 

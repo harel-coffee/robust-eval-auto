@@ -16,7 +16,7 @@ def run_must(path_to_network, path_to_seeds, outfile):
     f.close()
     if not os.path.exists('robustness_comparison/MUSTOut'):
         os.makedirs('robustness_comparison/MUSTOut')
-    call(["python3", "amim_test_suite/algorithms/must/must.py", tmpfile, path_to_seeds, "0.0", "10", "0", outfile])
+    call(["python3", "amim_test_suite/algorithms/must/must.py", tmpfile, path_to_seeds, "0.0", "30", "0", outfile])
     output_graph = pd.read_csv(outfile, sep="\t")
     nodes = set(output_graph["source_node"]).union(set(output_graph["target_node"]))
     os.remove(tmpfile)
