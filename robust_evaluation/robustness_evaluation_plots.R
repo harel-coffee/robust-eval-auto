@@ -12,7 +12,6 @@ colnames(all_results_rmust) <- c("seed_set", "threshold", "R-MuST")
 all_results_diamond <- fread("../robustness_comparison/DIAMONDOut/DIAMOND.out", keepLeadingZeros = T)
 colnames(all_results_diamond) <- c("seed_set", "DIAMOnD")
 
-
 all_results_domino <- fread("../robustness_comparison/DOMINOOut/DOMINO.out", keepLeadingZeros = T)
 colnames(all_results_domino) <- c("seed_set", "DOMINO")
 
@@ -26,7 +25,7 @@ all_results_wide <- merge(all_results_wide, all_results_diamond, by = "seed_set"
 all_results_wide <- merge(all_results_wide, all_results_domino, by = "seed_set")
 all_results_wide <- merge(all_results_wide, all_results_robust[, c(1,3)], by = "seed_set")
 all_results <- melt(all_results_wide, id.vars = "seed_set", variable.name = "algorithm", value.name = "mean jaccard")
-all_results[, algorithm := factor(algorithm, levels = c("R-MuST","DOMINO", "MuST", "DIAMOnD", "ROBUST"))]
+all_results[, algorithm := factor(algorithm, levels = c("DOMINO", "MuST", "R-MuST", "DIAMOnD", "ROBUST"))]
 
 #exclude seed files used for the hyperparameter tuning
 robust_hyperparameters <- fread("../robustness_comparison/ROBUSTOut_Hyperparameters/ROBUST_0.25_0.1.out")
@@ -44,7 +43,7 @@ ggplot(all_results, aes(x = algorithm, y = `mean jaccard`))+
   labs(x = "Algorithm", 
        y = expression(atop(paste("Distributions of robustness coefficients ", r[S]), paste("over 829 seed sets S"))))
 
-ggsave("../img/all_robustness_results.png")
+ggsave("../img/all_robustness_results.png", width = 8, height = 6.5)
 
 p.values = data.table(var1 = factor(), var2 = factor(), p.value = numeric())
 for(i in seq(2, (length(all_results_wide)))){
