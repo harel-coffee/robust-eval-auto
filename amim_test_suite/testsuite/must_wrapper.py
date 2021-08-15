@@ -59,7 +59,7 @@ class MuSTWrapper(AlgorithmWrapper):
 
         # Run Biosteiner.
         covex_must = 'cd ../algorithms/must/; python must.py'
-        command = f'{covex_must} ../{path_to_network} ../{path_seeds} 0.0 10 0 ../{path_to_output}'
+        command = f'{covex_must} ../{path_to_network} ../{path_seeds} 0.0 30 0 ../{path_to_output}'
         subprocess.call(command, shell=True, stdout=sys.stdout)
 
         # 5. Process results such that they are formatted as a list of strings (entez IDs)
