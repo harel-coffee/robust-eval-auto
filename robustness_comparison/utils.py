@@ -37,17 +37,18 @@ def get_parser():
 
 def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25, red=0.9, nr_of_trees=20):
     list_tuples = []
+
+    # for robustness tests
     #sort seeds by size
-    path = "robustness_comparison/data/2020-07-07/all-seeds"
-    #for robustness tests
+    #path = "robustness_comparison/data/2020-07-07/all-seeds"
     #dirpath = os.path.abspath(path)
     #all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
     #all_seeds = sorted(all_files, key = os.path.getsize)
-    #tmp
     #all_seeds = [os.path.basename(file) for file in all_seeds]
+
     #for hyperparameter tests
     all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")[0:100]
-    breakpoint()
+
     if type(threshold) == list and len(threshold) == 1:
         threshold = threshold[0]
     if type(nr_of_trees) == list and len(nr_of_trees) == 1:
