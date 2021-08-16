@@ -39,12 +39,12 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
     list_tuples = []
 
     # for robustness tests
-    #sort seeds by size
+    # sort seeds by size
     #path = "robustness_comparison/data/2020-07-07/all-seeds"
     #dirpath = os.path.abspath(path)
     #all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
     #all_seeds = sorted(all_files, key = os.path.getsize)
-    #all_seeds = [os.path.basename(file) for file in all_seeds]
+    #all_seeds = [os.path.basename(file) for file in all_seeds][0:900]
 
     #for hyperparameter tests
     all_seeds = os.listdir("robustness_comparison/data/2020-07-07/all-seeds")[0:100]
