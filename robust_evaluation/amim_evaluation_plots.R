@@ -4,11 +4,12 @@ library(ggpubr)
 full_results <- fread("full_results.csv")
 full_results[, V1 := NULL]
 
-results_robust<- fread("../amim_test_suite/results_robust2/all_results.csv")
+results_robust<- fread("../amim_test_suite/results/all_results.csv")
 results_robust[, V1 := NULL]
-results_must <- fread("../amim_test_suite/results_must/all_results_must.csv")
-results_must[, c("V1", "Unnamed: 0") := NULL]
-results_must$algorithm_name <- "MUST"
+results_robust <- results_robust[algorithm_name == "ROBUST"]
+results_must <- fread("../amim_test_suite/results/all_results.csv")
+results_must[, V1 := NULL]
+results_must <- results_must[algorithm_name == "MUST"]
 
 results_all <- rbind(results_robust, full_results)
 results_all <- rbind(results_all, results_must)
@@ -71,6 +72,7 @@ ggsave("../img/functional_relevance_all.png", height = 7, width = 12)
 
 results_merged <- full_results[!algorithm_name %in% c("HOTNET", "NETCORE")]
 results_merged <- rbind(results_robust, results_merged)
+results_merged[, algorithm_name := as.factor(algorithm_name)]
 
 compute_pvalues <- function(results, variable){
   return_list <- lapply(unique(results[, network_generator_name]), function(x){
@@ -93,11 +95,26 @@ compute_pvalues <- function(results, variable){
   return(return_dt)
 }
 
-results_gsea <- compute_pvalues(results_merged, "neg_log_gsea_p_value")
+compute_validity_scores <- function(results, variable){
+  if(variable == "neg_log_gsea_p_value"){
+    validity_scores <- results[network_generator_name == "ORIGINAL" & neg_log_gsea_p_value >= -log10(0.05), .N , by = algorithm_name]
+  }else{
+    validity_scores <- results[network_generator_name == "ORIGINAL" & get(variable) >= 0.2, .N , by = algorithm_name]
+  }
+  validity_scores <- merge(validity_scores, results[network_generator_name == "ORIGINAL", .N , by = algorithm_name], by = "algorithm_name", all=T)
+  validity_scores$N.x <- nafill(validity_scores$N.x, type="const", fill=0)
+  validity_scores$validity_score <- validity_scores$N.x / validity_scores$N.y
+  return(validity_scores)
+}
 
-p_values_kegg <- ggplot(results_gsea, aes(x = generator, y = -log10(p_value), color = algorithm))+
-  geom_point(size=3)+
-  scale_color_manual(name = "Algorithm", values = colorBlind)+
+results_gsea <- compute_pvalues(results_merged, "neg_log_gsea_p_value")
+validity_scores <- compute_validity_scores(results_merged, "neg_log_gsea_p_value")
+results_gsea <- merge(results_gsea, validity_scores[, c(1,4)], by.x = "algorithm", by.y = "algorithm_name", all.x=T)
+
+p_values_kegg <- ggplot(results_gsea[algorithm %in% c("DOMINO", "DIAMOND", "ROBUST")], aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
+  geom_point()+
+  scale_color_manual(name = "Algorithm", values = colorBlind[c(5,7,9)])+
+  scale_size_continuous(breaks = seq(0.0, 1.0, 0.2),name = "Validity", limits = c(0.0, 1.0))+
   geom_hline(yintercept = -log10(0.05), color="red")+
   theme_bw()+
   theme(text = element_text(size=15))+
@@ -105,36 +122,45 @@ p_values_kegg <- ggplot(results_gsea, aes(x = generator, y = -log10(p_value), co
 
 
 results_disgenet <- compute_pvalues(results_merged, "disgenet_overlap") 
-p_values_disgenet <- ggplot(results_disgenet, aes(x = generator, y = -log10(p_value), color = algorithm))+
-  geom_point(size=3)+
-  scale_color_manual(name = "Algorithm", values = colorBlind)+
+validity_scores <- compute_validity_scores(results_merged, "disgenet_overlap")
+results_disgenet <- merge(results_disgenet, validity_scores[, c(1,4)], by.x = "algorithm", by.y = "algorithm_name", all.x=T)
+p_values_disgenet <- ggplot(results_disgenet[algorithm %in% c("DOMINO", "DIAMOND", "ROBUST")], aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
+  geom_point()+
+  scale_color_manual(name = "Algorithm", values = colorBlind[c(5,7,9)])+
+  scale_size_continuous(breaks = seq(0.0, 1.0, 0.2),name = "Validity", limits = c(0.0, 0.4))+
   geom_hline(yintercept = -log10(0.05), color="red")+
   theme_bw()+
   theme(text = element_text(size=15))+
   labs(x = "Generator", y = "-log10(P-value)", title="Overlap with DisGeNET disease genes")
 
 results_mi <- compute_pvalues(results_merged, "mean_mutual_information")
-p_values_mi <- ggplot(results_mi, aes(x = generator, y = -log10(p_value), color = algorithm))+
-  geom_point(size=3)+
+validity_scores <- compute_validity_scores(results_merged, "mean_mutual_information")
+results_mi <- merge(results_mi, validity_scores[, c(1,4)], by.x = "algorithm", by.y = "algorithm_name", all.x=T)
+p_values_mi <- ggplot(results_mi, aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
+  geom_point()+
   scale_color_manual(name = "Algorithm", values = colorBlind)+
+  scale_size_continuous(breaks = seq(0,1,0.1))+
   geom_hline(yintercept = -log10(0.05), color="red")+
   theme_bw()+
   theme(text = element_text(size=15))+
   labs(x = "Generator", y = "-log10(P-value)", title="Mean mutual information with the phenotype")
 
 results_survival <- compute_pvalues(results_merged, "survival")
-p_values_survival <- ggplot(results_survival, aes(x = generator, y = -log10(p_value), color = algorithm))+
-  geom_point(size=3)+
+validity_scores <- compute_validity_scores(results_merged, "survival")
+results_survival <- merge(results_survival, validity_scores[, c(1,4)], by.x = "algorithm", by.y = "algorithm_name", all.x=T)
+p_values_survival <- ggplot(results_survival, aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
+  geom_point()+
   scale_color_manual(name = "Algorithm", values = colorBlind)+
+  scale_size_continuous(breaks = seq(0,1,0.1))+
   geom_hline(yintercept = -log10(0.05), color="red")+
   theme_bw()+
   theme(text = element_text(size=15))+
   labs(x = "Generator", y = "-log10(P-value)", title="Mean mutual information with the survival")
 
-ggarrange(p_values_kegg, p_values_disgenet, p_values_mi, p_values_survival,
-          labels=c("A", "B", "C", "D"),
+ggarrange(p_values_kegg, p_values_disgenet,
+          labels=c("A", "B"),
           font.label=list(size=18),
           legend = "right",
-          common.legend = T)
+          common.legend = F)
 
-ggsave("../img/comparison_AMIM_paper.png", width=16, height = 8)
+ggsave("../img/comparison_AMIM_paper.png", width=18, height = 4)
