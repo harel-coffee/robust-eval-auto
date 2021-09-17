@@ -10,10 +10,12 @@ results_robust <- results_robust[algorithm_name == "ROBUST"]
 results_must <- fread("../amim_test_suite/results/all_results.csv")
 results_must[, V1 := NULL]
 results_must <- results_must[algorithm_name == "MUST"]
+results_must[,algorithm_name := "MuST"]
 
 results_all <- rbind(results_robust, full_results)
 results_all <- rbind(results_all, results_must)
-results_all <- results_all[algorithm_name %in% c("ROBUST", "MUST", "DOMINO", "DIAMOND")]
+results_all[algorithm_name == "DIAMOND", algorithm_name := "DIAMOnD"]
+results_all <- results_all[algorithm_name %in% c("ROBUST", "MuST", "DOMINO", "DIAMOnD")]
 results_all[, network_generator_name := as.factor(network_generator_name)]
 results_all[, algorithm_name := as.factor(algorithm_name)]
 
@@ -26,13 +28,13 @@ results_original <- melt(results_original, measure.vars = c("disgenet_overlap", 
                          variable.name = "score", value.name = "value")
 results_original <- results_original[, score := gsub("disgenet_overlap", "Overlap with DisGeNET disease genes", score)]
 results_original <- results_original[, score := gsub("neg_log_gsea_p_value", "KEGG gene set enrichment", score)]
-results_original <- results_original[, algorithm_name := factor(algorithm_name, levels = c("ROBUST", "MUST", "DIAMOND", "DOMINO"))]
+results_original <- results_original[, algorithm_name := factor(algorithm_name, levels = c("ROBUST", "MuST", "DIAMOnD", "DOMINO"))]
 
 per_disease_disgenet <- ggplot(results_original[score == "Overlap with DisGeNET disease genes"], aes(x = condition_name, y = value, fill = algorithm_name))+
   geom_boxplot()+
   facet_wrap(~ score, scales = "free")+
   theme_bw()+
-  theme(text = element_text(size=20))+
+  theme(text = element_text(size=14))+
   labs(x = "Disease", y = "Overlap Coefficient")+
   scale_fill_manual(name = "Algorithm", values = colorBlind[c(6,9,4,5)])
 
@@ -40,7 +42,7 @@ per_disease_kegg <- ggplot(results_original[score == "KEGG gene set enrichment"]
   geom_boxplot()+
   facet_wrap(~ score, scales = "free")+
   theme_bw()+
-  theme(text = element_text(size=20))+
+  theme(text = element_text(size=14))+
   labs(x = "Disease", y = "-log 10(P-value)")+
   scale_fill_manual(name = "Algorithm", values = colorBlind[c(6,9,4,5)])
 
@@ -50,7 +52,7 @@ overall_disgenet <- ggplot(results_original[score == "Overlap with DisGeNET dise
   theme_bw()+
   labs(x = "Algorithm", y = "Overlap Coefficient")+
   scale_fill_manual(name = "Algorithm", values = colorBlind[c(6,9,4,5)])+
-  theme(text = element_text(size=20), legend.position = "none")
+  theme(text = element_text(size=14), legend.position = "none")
 
 overall_kegg <- ggplot(results_original[score == "KEGG gene set enrichment"], aes(x = algorithm_name, y = value, fill = algorithm_name))+
   geom_boxplot()+
@@ -58,16 +60,17 @@ overall_kegg <- ggplot(results_original[score == "KEGG gene set enrichment"], ae
   theme_bw()+
   labs(x = "Algorithm", y = "-log 10(P-value)")+
   scale_fill_manual(name = "Algorithm", values = colorBlind[c(6,9,4,5)])+
-  theme(text = element_text(size=20), legend.position = "none")
+  theme(text = element_text(size=14), legend.position = "none")
 
 #plot for the paper
 ggarrange(per_disease_disgenet, per_disease_kegg, 
           overall_disgenet, overall_kegg,
           labels=c('A', 'B', 'C', 'D'),
-          font.label=list(size=18),
-          legend = "right",
+          font.label=list(size=20),
+          ncol=1,
+          legend = "top",
           common.legend = T)
-ggsave("../img/functional_relevance_all.png", height = 7, width = 12)
+ggsave("../img/functional_relevance_all.png", height = 12, width = 6)
 
 
 results_merged <- full_results[!algorithm_name %in% c("HOTNET", "NETCORE")]
@@ -89,7 +92,7 @@ compute_pvalues <- function(results, variable){
   return_dt <- rbindlist(return_list)
   return_dt <- return_dt[generator != "ORIGINAL"]
   return_dt[, p_adj := p.adjust(p_value)]
-  return_dt <- return_dt[, algorithm := factor(algorithm, levels = c("ROBUST", "DIAMOND", "DOMINO", "GF", "COSINE", "KPM", "GXNA", "CLUSTEX2", "GIGA"))]
+  return_dt <- return_dt[, algorithm := factor(algorithm, levels = c("ROBUST", "DIAMOnD", "DOMINO", "GF", "COSINE", "KPM", "GXNA", "CLUSTEX2", "GIGA"))]
   return_dt <- return_dt[, generator := factor(generator, levels = c("REWIRED", "EXPECTED_DEGREE", 
                                                                            "SHUFFLED", "SCALE_FREE", "UNIFORM"))]
   return(return_dt)
@@ -111,7 +114,7 @@ results_gsea <- compute_pvalues(results_merged, "neg_log_gsea_p_value")
 validity_scores <- compute_validity_scores(results_merged, "neg_log_gsea_p_value")
 results_gsea <- merge(results_gsea, validity_scores[, c(1,4)], by.x = "algorithm", by.y = "algorithm_name", all.x=T)
 
-p_values_kegg <- ggplot(results_gsea[algorithm %in% c("DOMINO", "DIAMOND", "ROBUST")], aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
+p_values_kegg <- ggplot(results_gsea[algorithm %in% c("DOMINO", "DIAMOnD", "ROBUST")], aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
   geom_point()+
   scale_color_manual(name = "Algorithm", values = colorBlind[c(5,7,9)])+
   scale_size_continuous(breaks = seq(0.0, 1.0, 0.2),name = "Validity", limits = c(0.0, 1.0))+
@@ -124,7 +127,7 @@ p_values_kegg <- ggplot(results_gsea[algorithm %in% c("DOMINO", "DIAMOND", "ROBU
 results_disgenet <- compute_pvalues(results_merged, "disgenet_overlap") 
 validity_scores <- compute_validity_scores(results_merged, "disgenet_overlap")
 results_disgenet <- merge(results_disgenet, validity_scores[, c(1,4)], by.x = "algorithm", by.y = "algorithm_name", all.x=T)
-p_values_disgenet <- ggplot(results_disgenet[algorithm %in% c("DOMINO", "DIAMOND", "ROBUST")], aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
+p_values_disgenet <- ggplot(results_disgenet[algorithm %in% c("DOMINO", "DIAMOnD", "ROBUST")], aes(x = generator, y = -log10(p_value), color = algorithm, size=validity_score))+
   geom_point()+
   scale_color_manual(name = "Algorithm", values = colorBlind[c(5,7,9)])+
   scale_size_continuous(breaks = seq(0.0, 1.0, 0.2),name = "Validity", limits = c(0.0, 0.4))+

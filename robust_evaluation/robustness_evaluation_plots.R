@@ -35,9 +35,16 @@ all_results <- all_results[!seed_set %in% hyperparameter_seeds]
 all_results_wide <- all_results_wide[!seed_set %in% hyperparameter_seeds]
 print(length(unique(all_results$seed_set)))
 
+colorBlind   <- c("#000000", "#999999", "#E69F00", "#56B4E9", "#009E73", 
+                  "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
 #2 plots for paper
-ggplot(all_results, aes(x = algorithm, y = `mean jaccard`))+
+ggplot(all_results, aes(x = algorithm, y = `mean jaccard`, fill = algorithm))+
   geom_boxplot()+
+  scale_fill_manual(name = "Algorithm", values = c("ROBUST" = colorBlind[6], "MuST" = colorBlind[9],
+                                                   "DIAMOnD" = colorBlind[4], "DOMINO" = colorBlind[5], 
+                                                   "R-MuST" = colorBlind[3]))+
+  #scale_color_manual(name = "Algorithm", values = c("ROBUST" = colorBlind[6], "MuST" = colorBlind[9],"DIAMOnD" = colorBlind[4], "DOMINO" = colorBlind[5], "R-MuST" = colorBlind[3]))+
   theme_bw()+
   theme(text = element_text(size=20), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.y = element_text(hjust=2))+
   labs(x = "Algorithm", 
