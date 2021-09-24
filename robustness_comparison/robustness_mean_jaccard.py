@@ -48,7 +48,7 @@ def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, r
         all_node_sets = [dict() for i in range(robustness_iterations)]
     else:
         all_node_sets = [set() for i in range(robustness_iterations)]
-    path_to_network = "robustness_comparison/data/2020-07-07/protein-protein-interaction.txt"
+    path_to_network = "robustness_comparison/data/protein-protein-interaction.txt"
     if algorithm == 'ROBUST':
         terminals = read_terminals(path_to_seeds)
     for i in range(robustness_iterations):

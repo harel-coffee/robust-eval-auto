@@ -20,7 +20,7 @@ def shuffle_nodes(G):
 def run_robust(terminals, threshold, init, red, nr_of_trees):
     from amim_test_suite.algorithms.robust.pcst_approach.utils.ppi import PpiInstance, UnitEdgeWeight, read_ppi_shuffled
     from amim_test_suite.algorithms.robust.pcst_approach.utils import ExpMinMaxDiverseSteinerTreeComputer, SolutionSet
-    graph = read_ppi_shuffled("robustness_comparison/data/2020-07-07/protein-protein-interaction.txt", shuffle=True)
+    graph = read_ppi_shuffled("robustness_comparison/data/protein-protein-interaction.txt", shuffle=True)
     graph, node_mapping, reverse_map = shuffle_nodes(graph)
     terminals = [node_mapping[key] for key in terminals]
     edge_weights = UnitEdgeWeight()
@@ -56,7 +56,7 @@ def run_robust(terminals, threshold, init, red, nr_of_trees):
 def run_robust_original(terminals, threshold, init, red, nr_of_trees):
     from amim_test_suite.algorithms.robust.pcst_approach.utils.ppi import PpiInstance, UnitEdgeWeight, read_ppi_shuffled
     from amim_test_suite.algorithms.robust.pcst_approach.utils import ExpMinMaxDiverseSteinerTreeComputer, SolutionSet
-    graph = read_ppi_shuffled("robustness_comparison/data/2020-07-07/protein-protein-interaction.txt", shuffle=True)
+    graph = read_ppi_shuffled("robustness_comparison/data/protein-protein-interaction.txt", shuffle=True)
     edge_weights = UnitEdgeWeight()
     ppi_instance = PpiInstance(graph, terminals, edge_weights)
     engine = ExpMinMaxDiverseSteinerTreeComputer(initial_fraction=init,

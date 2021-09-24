@@ -72,7 +72,7 @@ def time_diamond(path_to_network, path_to_seeds, path_to_output):
 
 def runtime_comparison():
     #os.chdir("../")
-    path_to_network = "robustness_comparison/data/2020-07-07/protein-protein-interaction.txt"
+    path_to_network = "robustness_comparison/data/protein-protein-interaction.txt"
     dt = pd.read_csv(path_to_network, sep="\t")
     nodelist = list(set(dt['source_protein']).union(dt['target_protein']))
     #sample seeds

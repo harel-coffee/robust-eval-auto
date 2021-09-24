@@ -74,7 +74,7 @@ library(xtable)
 print(xtable(p.values, digits = -3))
 
 
-length_seed_files <- fread("../robustness_comparison/data/2020-07-07/all-seeds/lengths_seed_files.txt")
+length_seed_files <- fread("../robustness_comparison/data/all-seeds/lengths_seed_files.txt")
 length_seed_files[, seed_file := tstrsplit(V2, ".t", keep = 1)]
 length_seed_files[, V2 := NULL]
 colnames(length_seed_files) <- c("length", "seed_set")
