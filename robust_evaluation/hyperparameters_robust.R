@@ -1,6 +1,6 @@
 library(data.table)
 library(ggplot2)
-robustness_tests <- lapply(list.files("~/Downloads/ROBUSTOut_Hyperparameters/", full.names = T), fread)
+robustness_tests <- lapply(list.files("../robustness_comparison/ROBUSTOut_Hyperparameters/", full.names = T), fread)
 names(robustness_tests) <- tstrsplit(tstrsplit(list.files("../robustness_comparison/ROBUSTOut_Hyperparameters/"), "ROBUST_", keep=2)[[1]], ".out", keep=1)[[1]]
 
 robustness_tests <- rbindlist(robustness_tests, idcol="init_red")

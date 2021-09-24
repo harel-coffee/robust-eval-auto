@@ -3,11 +3,6 @@ amim_test_suite/results_robust10
 amim_test_suite/results_must
 amim_test_suite/results_robust
 
-robustness_comparison/DiamondOut
-robustness_comparison/DominoOut
-robustness_comparison/MuSTOut
-robustness_comparison/RMuSTOut
-robustness_comparison/RobustOut
 
 ## DS_Store
 *.DS_Store
