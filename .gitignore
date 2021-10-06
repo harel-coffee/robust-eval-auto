@@ -13,7 +13,7 @@ amim_test_suite/results_robust
 *.log
 *.lot
 *.fls
-*.out
+#*.out
 *.toc
 *.fmt
 *.fot

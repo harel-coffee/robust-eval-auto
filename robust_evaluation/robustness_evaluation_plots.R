@@ -73,25 +73,3 @@ p.values <- p.values[order(p.adj)]
 library(xtable)
 print(xtable(p.values, digits = -3))
 
-
-length_seed_files <- fread("../robustness_comparison/data/all-seeds/lengths_seed_files.txt")
-length_seed_files[, seed_file := tstrsplit(V2, ".t", keep = 1)]
-length_seed_files[, V2 := NULL]
-colnames(length_seed_files) <- c("length", "seed_set")
-all_results_wide <- merge(length_seed_files, all_results_wide, by = "seed_set")
-robust_hyperparameters <- merge(robust_hyperparameters, length_seed_files, by = "seed_set")
-
-diamond_biosteiner <- fread("~/PycharmProjects/project-2020-biosteiner/diamond_biosteiner.csv")
-ggplot(diamond_biosteiner, aes(x = jaccard))+
-  geom_histogram(bins=30)+
-  theme_bw()
-
-diamond_biosteiner2 <- fread("~/PycharmProjects/project-2020-biosteiner/diamond_biosteiner2.csv")
-ggplot(diamond_biosteiner2, aes(x = jaccard))+
-  geom_histogram(bins=30)+
-  theme_bw()
-
-diamond_biosteiner9 <- fread("~/PycharmProjects/project-2020-biosteiner/diamond_biosteiner9.csv")
-ggplot(diamond_biosteiner9, aes(x = jaccard))+
-  geom_histogram(bins=30)+
-  theme_bw()
