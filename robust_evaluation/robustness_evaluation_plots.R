@@ -15,7 +15,7 @@ colnames(all_results_diamond) <- c("seed_set", "DIAMOnD")
 all_results_domino <- fread("../robustness_comparison/DOMINOOut/DOMINO.out", keepLeadingZeros = T)
 colnames(all_results_domino) <- c("seed_set", "DOMINO")
 
-all_results_robust <- fread("../robustness_comparison/ROBUSTOut2/ROBUST_0.25_0.9.out")
+all_results_robust <- fread("../robustness_comparison/ROBUSTOut/ROBUST_0.25_0.9.out")
 all_results_robust <- tidyr::separate(all_results_robust, "seed_set", c("seed_set", "threshold"), sep = "_")
 all_results_robust[, threshold := tstrsplit(threshold, "thr", keep=2)]
 colnames(all_results_robust) <- c("seed_set", "threshold", "ROBUST")

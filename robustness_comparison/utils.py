@@ -40,14 +40,14 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
 
     # for robustness tests
     # sort seeds by size
-    #path = "robustness_comparison/data/all-seeds"
-    #dirpath = os.path.abspath(path)
-    #all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
-    #all_seeds = sorted(all_files, key = os.path.getsize)
-    #all_seeds = [os.path.basename(file) for file in all_seeds][0:900]
+    path = "robustness_comparison/data/robustness-seeds"
+    dirpath = os.path.abspath(path)
+    all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
+    all_seeds = sorted(all_files, key = os.path.getsize)
+    all_seeds = [os.path.basename(file) for file in all_seeds][0:900]
 
     #for hyperparameter tests
-    all_seeds = ['0000088.txt', '0000248.txt', '0000328.txt', '0000507.txt', '0001341.txt', '0001744.txt', '0001751.txt', '0002305.txt', '0002462.txt', '0002476.txt', '0002728.txt', '0002926.txt', '0002927.txt', '0003225.txt', '0003435.txt', '0003436.txt', '0003608.txt', '0003783.txt', '0003999.txt', '0004614.txt', '0004946.txt', '0004985.txt', '0005044.txt', '0005090.txt', '0005279.txt', '0005292.txt', '0005480.txt', '0005721.txt', '0006176.txt', '0006375.txt', '0006406.txt', '0006566.txt', '0006573.txt', '0006639.txt', '0007042.txt', '0007043.txt', '0007269.txt', '0007309.txt', '0007650.txt', '0007863.txt', '0008199.txt', '0008364.txt', '0008748.txt', '0009046.txt', '0009133.txt', '0009279.txt', '0009292.txt', '0009443.txt', '0009480.txt', '0009640.txt', '0009641.txt', '0009655.txt', '0009656.txt', '0009668.txt', '0009696.txt', '0010264.txt', '0010311.txt', '0010847.txt', '0011153.txt', '0011190.txt', '0011191.txt', '0011556.txt', '0011740.txt', '0011812.txt', '0011966.txt', '0013433.txt', '0013792.txt', '0015137.txt', '0015240.txt', '0015254.txt', '0015452.txt', '0015917.txt', '0016364.txt', '0016576.txt', '0016761.txt', '0016985.txt', '0017052.txt', '0017053.txt', '0017319.txt', '0018177.txt', '0018188.txt', '0018214.txt', '0018229.txt', '0018598.txt', '0018604.txt', '0018638.txt', '0018770.txt', '0018943.txt', '0018956.txt', '0019269.txt', '0019308.txt', '0019719.txt', '0020562.txt', '0020563.txt', '0020761.txt', '0021084.txt', '0021085.txt', '0021245.txt', '0023122.txt', '0024498.txt']
+    #all_seeds = ['0000088.txt', '0000248.txt', '0000328.txt', '0000507.txt', '0001341.txt', '0001744.txt', '0001751.txt', '0002305.txt', '0002462.txt', '0002476.txt', '0002728.txt', '0002926.txt', '0002927.txt', '0003225.txt', '0003435.txt', '0003436.txt', '0003608.txt', '0003783.txt', '0003999.txt', '0004614.txt', '0004946.txt', '0004985.txt', '0005044.txt', '0005090.txt', '0005279.txt', '0005292.txt', '0005480.txt', '0005721.txt', '0006176.txt', '0006375.txt', '0006406.txt', '0006566.txt', '0006573.txt', '0006639.txt', '0007042.txt', '0007043.txt', '0007269.txt', '0007309.txt', '0007650.txt', '0007863.txt', '0008199.txt', '0008364.txt', '0008748.txt', '0009046.txt', '0009133.txt', '0009279.txt', '0009292.txt', '0009443.txt', '0009480.txt', '0009640.txt', '0009641.txt', '0009655.txt', '0009656.txt', '0009668.txt', '0009696.txt', '0010264.txt', '0010311.txt', '0010847.txt', '0011153.txt', '0011190.txt', '0011191.txt', '0011556.txt', '0011740.txt', '0011812.txt', '0011966.txt', '0013433.txt', '0013792.txt', '0015137.txt', '0015240.txt', '0015254.txt', '0015452.txt', '0015917.txt', '0016364.txt', '0016576.txt', '0016761.txt', '0016985.txt', '0017052.txt', '0017053.txt', '0017319.txt', '0018177.txt', '0018188.txt', '0018214.txt', '0018229.txt', '0018598.txt', '0018604.txt', '0018638.txt', '0018770.txt', '0018943.txt', '0018956.txt', '0019269.txt', '0019308.txt', '0019719.txt', '0020562.txt', '0020563.txt', '0020761.txt', '0021084.txt', '0021085.txt', '0021245.txt', '0023122.txt', '0024498.txt']
     #os.listdir("robustness_comparison/data/all-seeds")[0:100]
 
     if type(threshold) == list and len(threshold) == 1:
