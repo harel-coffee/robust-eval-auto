@@ -40,7 +40,7 @@ def prep_parameters(algorithm=AlgorithmSelector.ROBUST, threshold=0.5, init=0.25
 
     # for robustness tests
     # sort seeds by size
-    path = "robustness_comparison/data/robustness-seeds"
+    path = "robustness_comparison/data/all-seeds"
     dirpath = os.path.abspath(path)
     all_files = (os.path.join(basedir, filename) for basedir, dirs, files in os.walk(dirpath) for filename in files)
     all_seeds = sorted(all_files, key = os.path.getsize)
