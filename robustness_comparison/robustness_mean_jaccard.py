@@ -73,7 +73,7 @@ def run_algorithm(algorithm, path_to_seeds, outfile, threshold=0.5, init=0.25, r
         elif algorithm == 'RMUST':
             result_rmust = run_rmust(path_to_network, path_to_seeds, threshold, nr_of_trees)
             all_node_sets[i].update(result_rmust)
-    seed_name = path_to_seeds.split("/")[4].split(".")[0]
+    seed_name = path_to_seeds.split("/")[3].split(".")[0]
     if type(nr_of_trees) == list:
         return_dict = dict()
         if type(threshold) == list:
