@@ -80,35 +80,36 @@ def runtime_comparison():
     random.seed(1234)
     for i in range(25, 401, 25):
         print(i)
-        seeds = random.choices(nodelist, k=i)
-        path_to_seeds = tempfile.NamedTemporaryFile()
-        with open(path_to_seeds.name, 'w') as f:
-            for seed in seeds:
-                f.write(seed + "\n")
-        path_to_output = tempfile.NamedTemporaryFile()
-        for n_trees in [5, 10, 15, 20, 25, 30]:
-            #ROBUST
-            runtime_robust = time_robust(path_to_network, path_to_seeds.name, path_to_output.name, n_trees)
-            runtime_dict[f'ROBUST_{i}_{n_trees}'] = runtime_robust
-            # R-MuST
-            runtime_rmust = time_rmust(path_to_network, path_to_seeds.name, n_trees)
-            runtime_dict[f'R-MuST_{i}_{n_trees}'] = runtime_rmust
-            #MuST
-            runtime_must = time_must(path_to_network, path_to_seeds.name, path_to_output.name, n_trees)
-            runtime_dict[f'MuST_{i}_{n_trees}'] = runtime_must
-        # DOMINO
-        runtime_domino = time_domino(path_to_network, path_to_seeds.name)
-        runtime_dict[f'DOMINO_{i}_0'] = runtime_domino
-        #DIAMOnD
-        runtime_diamond = time_diamond(path_to_network, path_to_seeds.name, path_to_output.name)
-        runtime_dict[f'DIAMOnD_{i}_0'] = runtime_diamond
+        for j in range(10):
+            seeds = random.choices(nodelist, k=i)
+            path_to_seeds = tempfile.NamedTemporaryFile()
+            with open(path_to_seeds.name, 'w') as f:
+                for seed in seeds:
+                    f.write(seed + "\n")
+            path_to_output = tempfile.NamedTemporaryFile()
+            for n_trees in [5, 10, 15, 20, 25, 30]:
+                #ROBUST
+                runtime_robust = time_robust(path_to_network, path_to_seeds.name, path_to_output.name, n_trees)
+                runtime_dict[f'ROBUST_{i}_{j}_{n_trees}'] = runtime_robust
+                # R-MuST
+                #runtime_rmust = time_rmust(path_to_network, path_to_seeds.name, n_trees)
+                #runtime_dict[f'R-MuST_{i}_{n_trees}'] = runtime_rmust
+                #MuST
+                #runtime_must = time_must(path_to_network, path_to_seeds.name, path_to_output.name, n_trees)
+                #runtime_dict[f'MuST_{i}_{n_trees}'] = runtime_must
+            # DOMINO
+            runtime_domino = time_domino(path_to_network, path_to_seeds.name)
+            runtime_dict[f'DOMINO_{i}_{j}_0'] = runtime_domino
+            #DIAMOnD
+            runtime_diamond = time_diamond(path_to_network, path_to_seeds.name, path_to_output.name)
+            runtime_dict[f'DIAMOnD_{i}_{j}_0'] = runtime_diamond
     return runtime_dict
 
 
 if __name__ == '__main__':
     sys.path.append(os.getcwd())
     runtimes = runtime_comparison()
-    filename = 'runtime_evaluation/runtime_results.csv'
+    filename = 'runtime_evaluation/runtime_results_fast.csv'
     print('Writing file...')
     with open(filename, "w") as file:
         file.write("paramters,runtime\n")
